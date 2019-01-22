@@ -1,0 +1,11 @@
+[package]
+name = "chain"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6.4"
+sha2 = "0.8.0"
+bincode = "1.0.1"
+ed25519-dalek = "0.8.1"

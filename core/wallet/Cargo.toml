@@ -1,0 +1,10 @@
+[package]
+name = "wallet"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+sha2 = "0.8.0"
+rand = "0.6.4"
+ed25519-dalek = "0.9.1"

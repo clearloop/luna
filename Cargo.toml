@@ -1,0 +1,26 @@
+[[bin]]
+path = "luna/main.rs"
+name = "luna"
+
+[package]
+name = "luna"
+version = "0.1.0"
+authors = ["clearloop <udtrokia@gmail.com>"]
+edition = "2018"
+description = "Take your protein pills and put your helmet on."
+repository = "https://github.com/clearloop/luna"
+license = "GPL-3.0+"
+
+[dependencies]
+tx = { path = "./core/tx" }
+cli = { path = "./core/cli" }
+chain = { path = "./core/chain" }
+wallet = { path = "./core/wallet" }
+
+[workspace]
+members = [
+        "./core/tx",
+        "./core/cli",
+        "./core/chain",
+        "./core/wallet"
+]

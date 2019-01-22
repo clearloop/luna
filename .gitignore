@@ -1,0 +1,7 @@
+#@Rust
+**/target
+**/*.rs.bk
+
+#@System 
+.DS_Store
+MAC_OSX
