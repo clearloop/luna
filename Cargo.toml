@@ -12,15 +12,9 @@ repository = "https://github.com/clearloop/luna"
 license = "GPL-3.0+"
 
 [dependencies]
-tx = { path = "./core/tx" }
-cli = { path = "./core/cli" }
-chain = { path = "./core/chain" }
-wallet = { path = "./core/wallet" }
+primitive = { path = "./core/primitive" }
 
 [workspace]
 members = [
-        "./core/tx",
-        "./core/cli",
-        "./core/chain",
-        "./core/wallet"
+        "./core/primitive"
 ]

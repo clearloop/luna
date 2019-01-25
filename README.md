@@ -4,7 +4,7 @@ Luna is a decentralized platform that offers smart contract services for micro a
 ![you][you]
 
 ## Roadmap
-The implementation is simple and easy to understand, first for [Cuckoo][1], second for `VM`, and then `Client`.
+The implementation is lucid, first for [Cuckoo][1], second for `VM`, and then `Client`.
 
 ## Status
 Experimental project aims to explore the law of Cypherworld. For the first step, all we need to do is implementing a chain of block with [Cuckoo][1] Consensus.

@@ -1,12 +1,7 @@
-extern crate rand;
-extern crate sha2;
-extern crate ed25519_dalek;
-
 use std::fs::File;
 use std::ops::Deref;
 use std::io::{Write, Read};
 
-use sha2::Sha512;
 use rand::rngs::OsRng;
 use ed25519_dalek::Keypair;
 
@@ -25,7 +20,7 @@ pub struct Account(Keypair);
 impl Account {
     pub fn new() -> Self {
         let mut csprng: OsRng = OsRng::new().unwrap();
-        let keypair: Keypair = Keypair::generate::<Sha512, _>(&mut csprng);
+        let keypair: Keypair = Keypair::generate(&mut csprng);
         Account(keypair)
     }
 
@@ -54,9 +49,4 @@ impl Account {
 impl Deref for Account {
     type Target = Keypair;
     fn deref(&self) -> &Self::Target { &self.0 }
-}
-
-fn main() {
-    let a = Account::default();
-    println!("{:?}", a);
 }

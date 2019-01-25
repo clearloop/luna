@@ -1,6 +1,4 @@
 // Block
-extern crate ed25519_dalek;
-extern crate sha2;
 use sha2::{Sha256, Digest};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -38,9 +36,4 @@ fn ts() -> u64 {
 
     // Time units: 1sec = 10^3ms
     return now.as_secs() * 1000 + now.subsec_millis() as u64;
-}
-
-fn main() {
-    let b = Block::genesis();
-    println!("{:?}", b);
 }
