@@ -1,5 +1,5 @@
 # Luna
-Luna is a decentralized platform that offers smart contract services for micro application.
+Luna is a decentralized platform that offers smart contract services for micro contracts.
 
 ![you][you]
 

@@ -1,39 +1,50 @@
 // Block
-use sha2::{Sha256, Digest};
-use std::time::{SystemTime, UNIX_EPOCH};
+use crate::utils::{hmac, ts};
+use serde_derive::{Serialize, Deserialize};
 
-#[derive(Debug)]
-struct Block {
-    hash: [u8;32],
-    timestamp: u64,
-    prev_block_hash: [u8;32]
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Block {
+    pub head: Head,
+    body: Body
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Head {
+    pub hash: [u8;32],
+    pub nonce: usize
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Body {
+    pub txs: Vec<u8>,
+    pub timestamp: u64
 }
 
 impl Block {
-    pub fn genesis() -> Block {
-        let mut hasher = Sha256::new();
-        let mut default = Sha256::default();
-        hasher.input(b"luna");
-        default.input(b"default");
-
-        let mut res = <[u8;32]>::default();
-        let mut def = <[u8;32]>::default();
-        res.copy_from_slice(&hasher.result()[..]);
-        def.copy_from_slice(&default.result()[..]);
-
+    pub fn new<B>(msg: B, txs: Vec<u8>, nonce: usize) -> Block
+    where B: std::convert::AsRef<[u8]> {
         Block {
-            hash: res,
-            timestamp: ts(),
-            prev_block_hash: def
+            head: Head {
+                hash: hmac(msg),
+                nonce: nonce
+            },
+            body: Body {
+                txs: txs,
+                timestamp: ts()
+            }
         }
+    }
+
+    pub fn genesis() -> Self {
+        Block::new(
+            "Take your protein pill and put your helmet on.",
+            vec![], 0
+        )
     }
 }
 
-/// Luna uses millis as time unit.
-fn ts() -> u64 {
-    let now = SystemTime::now().duration_since(UNIX_EPOCH)
-        .expect("Take your protein pills and put your helmet on.");
-
-    // Time units: 1sec = 10^3ms
-    return now.as_secs() * 1000 + now.subsec_millis() as u64;
+pub struct Chain(Vec<Block>);
+impl Chain {
+    fn add_block() {}
+    fn mine_block() {}
 }

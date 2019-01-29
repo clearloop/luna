@@ -6,20 +6,18 @@ pub struct CLI { commands: Vec<Command> }
 
 impl CLI {
     /// TODO: termion
-    pub fn console() {
-        loop {
-            print!("$luna: ");
-            let mut val = String::new();
-            
-            io::stdout().flush().unwrap();            
-            io::stdin().read_line(&mut val).unwrap();
+    pub fn console() {loop {
+        print!("$luna: ");
+        let mut val = String::new();
 
-            match val.as_str() {
-                "exit\n" | "quit\n" => break,
-                _ => print!("your input is: {}", val)
-            }
+        io::stdout().flush().unwrap();            
+        io::stdin().read_line(&mut val).unwrap();
+
+        match val.as_str() {
+            "exit\n" | "quit\n" => break,
+            _ => print!("your input is: {}", val)
         }
-    }
+    }}
     
     pub fn exec() {
         match env::args().len() {
