@@ -1,6 +1,4 @@
 // utils
-use std::fs::File;
-use std::io::{Write, Read};
 use std::time::{SystemTime, UNIX_EPOCH};
 use sha2::{Sha256, Digest};
 
@@ -9,7 +7,7 @@ use sha2::{Sha256, Digest};
 ///+ Timestamp
 ///+ Disk I/O
 ///+ Convert
-//@H512
+//@H512 
 pub fn hmac<B>(data: B) -> [u8;32]
 where B: std::convert::AsRef<[u8]>
 {
@@ -36,20 +34,4 @@ where B: std::convert::AsRef<[u8]> {
     let mut hex = String::new();
     hex.extend(bytes.as_ref().iter().map(|byte| format!("{:02x}", byte)));
     hex
-}
-
-//@Disk I/O
-pub fn write<B>(data: B, path: &'static str) -> std::io::Result<()>
-where B: std::convert::AsRef<[u8]>
-{
-    let mut file = File::create(path)?;
-    file.write_all(data.as_ref())
-}
-
-pub fn read(path: &'static str) -> Vec<u8> {
-    let mut file = File::open(path).unwrap();
-    let mut content = vec![];
-
-    file.read_to_end(&mut content).unwrap();
-    content
 }

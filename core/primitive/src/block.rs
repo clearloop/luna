@@ -1,5 +1,7 @@
 // Block
+use crate::bytes;
 use crate::utils::{hmac, ts};
+use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -43,8 +45,4 @@ impl Block {
     }
 }
 
-pub struct Chain(Vec<Block>);
-impl Chain {
-    fn add_block() {}
-    fn mine_block() {}
-}
+bytes!(Block);

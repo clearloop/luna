@@ -141,6 +141,8 @@ name = "luna"
 version = "0.1.0"
 dependencies = [
  "primitive 0.1.0",
+ "spaceship 0.1.0",
+ "velvet_goldmine 0.1.0",
 ]
 
 [[package]]
@@ -332,6 +334,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "spaceship"
+version = "0.1.0"
+dependencies = [
+ "primitive 0.1.0",
+]
+
+[[package]]
 name = "subtle"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -355,6 +364,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "unicode-xid"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "velvet_goldmine"
+version = "0.1.0"
 
 [[package]]
 name = "winapi"

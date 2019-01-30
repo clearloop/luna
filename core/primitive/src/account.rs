@@ -1,3 +1,4 @@
+use crate::deref;
 use std::ops::{Deref, DerefMut};
 use rand::rngs::OsRng;
 use ed25519_dalek::Keypair;
@@ -9,6 +10,7 @@ use ed25519_dalek::Keypair;
 /// -> Boarcast
 /// -> Transaction Pool Call Back?
 /// -> <Minner>
+#[derive(Debug)]
 pub struct Account(Keypair);
 impl Account {
     pub fn new() -> Self {
@@ -16,17 +18,6 @@ impl Account {
         let keypair: Keypair = Keypair::generate(&mut csprng);
         Account(keypair)
     }
-
-    pub fn send() -> std::io::Result<()> {
-        Ok(())
-    }
 }
 
-impl Deref for Account {
-    type Target = Keypair;
-    fn deref(&self) -> &Self::Target { &self.0 }
-}
-
-impl DerefMut for Account {
-    fn deref_mut(&mut self) -> &mut Self::Target { &mut self.0 }
-}
+deref!(Account, Keypair);

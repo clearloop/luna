@@ -39,11 +39,10 @@ Copyright 2019 clearloop <udtrokia@gmail.com>
     }
 }
 
-#[allow(dead_code)]
-pub struct Command { sub_command: Vec<Command> }
-pub struct Option { flag: &'static str, exec: fn() -> () }
-
-trait Config {
-    fn helper(s: &'static str) -> Self;
-    fn option(s: &'static str) -> Self;
-}
+pub struct Command { pub sub_command: Vec<Command> }
+// pub struct Option { flag: &'static str, exec: fn() -> () }
+// 
+// trait Config {
+//     fn helper(s: &'static str) -> Self;
+//     fn option(s: &'static str) -> Self;
+// }

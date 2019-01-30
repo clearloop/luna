@@ -13,8 +13,12 @@ license = "GPL-3.0+"
 
 [dependencies]
 primitive = { path = "./core/primitive" }
+spaceship = { path = "./core/spaceship" }
+velvet_goldmine = { path = "./core/velvet_goldmine" }
 
 [workspace]
 members = [
-        "./core/primitive"
+        "./core/primitive",
+        "./core/spaceship",
+        "./core/velvet_goldmine"
 ]
