@@ -1,7 +1,7 @@
 use crate::deref;
 use std::ops::{Deref, DerefMut};
 use rand::rngs::OsRng;
-use ed25519_dalek::Keypair;
+use ed25519_dalek::{Keypair, Signature};
 
 /// Users Flow Chart
 /// Load Account
@@ -17,6 +17,12 @@ impl Account {
         let mut csprng: OsRng = OsRng::new().unwrap();
         let keypair: Keypair = Keypair::generate(&mut csprng);
         Account(keypair)
+    }
+
+    pub fn verify(&self, msg: Vec<u8>, signature: Vec<u8>) -> bool {
+        self.0.verify(
+            &msg, &Signature::from_bytes(&signature).unwrap()
+        ).is_ok()
     }
 }
 

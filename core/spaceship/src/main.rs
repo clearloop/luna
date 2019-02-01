@@ -1,10 +1,11 @@
 extern crate primitive;
 extern crate spaceship;
-// use primitive::{ account::Account, utils::hex};
-use spaceship::txs::{Transaction, Symmetric};
+
+use spaceship::cipher::Transfer;
 
 fn main() {
-    // let account = Account::new();
-    let tx = Transaction::new(vec![], vec![], vec![]);
-    println!("Transaction: {:?}", tx);
+    let transfer = Transfer::new();
+    let tx = transfer.generate(1, [0_u8; 32], "hello, world");
+    println!("{:?}", tx);
+    transfer.verify("hello, world", tx);
 }
