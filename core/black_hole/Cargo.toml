@@ -1,8 +1,9 @@
 [package]
-name = "spaceship"
+name = "black_hole"
 version = "0.1.0"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+dirs = "1.0.4"
 primitive = { path = "../primitive" }
