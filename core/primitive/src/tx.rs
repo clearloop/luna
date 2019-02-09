@@ -4,6 +4,7 @@ use crate::bytes;
 use crate::utils::hmac;
 use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
+use ed25519_dalek::{ PublicKey, Signature };
 
 /// # TxInput
 /// @id - H256
@@ -15,6 +16,16 @@ pub struct TxInput {
     pub msg: Vec<u8>,
     pub pub_key: [u8; 32],
     pub signature: Vec<u8>
+}
+
+impl TxInput {
+    pub fn verify(&self, msg: Vec<u8>) -> bool {
+        let pub_key = PublicKey::from_bytes(&self.pub_key).unwrap();
+        pub_key.verify(
+            &msg,
+            &Signature::from_bytes(&self.signature).unwrap()
+        ).is_ok()
+    }
 }
 
 /// # TxOutput

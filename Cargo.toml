@@ -12,15 +12,12 @@ repository = "https://github.com/clearloop/luna"
 license = "GPL-3.0+"
 
 [dependencies]
+thruster = { path = "./core/thruster" }
 primitive = { path = "./core/primitive" }
-black_hole = { path = "./core/black_hole" }
-velvet_goldmine = { path = "./core/velvet_goldmine" }
-guardians_of_galaxy = { path = "./core/guardians_of_galaxy" }
+
 
 [workspace]
 members = [
+        "./core/thruster",
         "./core/primitive",
-        "./core/black_hole",
-        "./core/velvet_goldmine",
-        "./core/guardians_of_galaxy"
 ]

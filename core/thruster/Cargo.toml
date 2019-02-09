@@ -1,5 +1,5 @@
 [package]
-name = "black_hole"
+name = "thruster"
 version = "0.1.0"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"

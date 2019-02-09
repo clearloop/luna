@@ -5,10 +5,14 @@ authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+dirs = "1.0.4"
 rand = "0.6.4"
 sha2 = "0.8.0"
 bincode = "1.0.1"
 num-bigint = "0.2.2"
 serde = "1.0.85"
 serde_derive = "1.0.85"
-ed25519-dalek = "1.0.0-pre.0"
+
+[dependencies.ed25519-dalek]
+version = "1.0.0-pre.0"
+features = ["serde"]

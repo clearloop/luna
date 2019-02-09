@@ -10,7 +10,7 @@ impl CLI {
         print!("$luna: ");
         let mut val = String::new();
 
-        io::stdout().flush().unwrap();            
+        io::stdout().flush().unwrap();
         io::stdin().read_line(&mut val).unwrap();
 
         match val.as_str() {

@@ -1,11 +1,11 @@
-// Block
+// Barrel
 use crate::bytes;
 use crate::utils::{hmac, ts};
 use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, Default)]
-pub struct Block {
+pub struct Barrel {
     pub head: Head,
     body: Body
 }
@@ -22,10 +22,10 @@ pub struct Body {
     pub timestamp: u64
 }
 
-impl Block {
-    pub fn new<B>(msg: B, txs: Vec<u8>, nonce: usize) -> Block
+impl Barrel {
+    pub fn new<B>(msg: B, txs: Vec<u8>, nonce: usize) -> Barrel
     where B: std::convert::AsRef<[u8]> {
-        Block {
+        Barrel {
             head: Head {
                 hash: hmac(msg),
                 nonce: nonce
@@ -38,11 +38,11 @@ impl Block {
     }
 
     pub fn genesis() -> Self {
-        Block::new(
+        Barrel::new(
             "Take your protein pill and put your helmet on.",
             vec![], 0
         )
     }
 }
 
-bytes!(Block);
+bytes!(Barrel);
