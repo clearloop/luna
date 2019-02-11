@@ -19,29 +19,23 @@ pub struct Head {
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Body {
     pub txs: Vec<u8>,
+    pub miner: [u8; 32],
     pub timestamp: u64
 }
 
 impl Barrel {
-    pub fn new<B>(msg: B, txs: Vec<u8>, nonce: usize) -> Barrel
+    pub fn new<B>(msg: B, txs: Vec<u8>, nonce: usize, miner: [u8; 32]) -> Barrel
     where B: std::convert::AsRef<[u8]> {
         Barrel {
             head: Head {
-                hash: hmac(msg),
-                nonce: nonce
+                hash: hmac(msg), nonce: nonce
             },
             body: Body {
                 txs: txs,
+                miner: miner,
                 timestamp: ts()
             }
         }
-    }
-
-    pub fn genesis() -> Self {
-        Barrel::new(
-            "Take your protein pill and put your helmet on.",
-            vec![], 0
-        )
     }
 }
 

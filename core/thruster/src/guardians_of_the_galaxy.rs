@@ -1,5 +1,5 @@
-// bandolier
-pub use primitive::cowboy::Cowboy;
+// Guardian
+use crate::Cowboy;
 use primitive::tx::{Transaction, TxInput, TxOutput};
 
 /// # Transfer

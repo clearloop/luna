@@ -1,7 +1,7 @@
 // db
-use std::fs::{File, create_dir, OpenOptions};
-use std::io::{Write, Read};
 use std::path::PathBuf;
+use std::io::{Write, Read};
+use std::fs::{File, create_dir, OpenOptions};
 
 /// # IO
 /// need data structure that stand alone
@@ -11,6 +11,10 @@ pub struct IO {
 }
 
 impl IO {
+    pub fn home_dir() -> PathBuf {
+        dirs::home_dir().unwrap()
+    }
+    
     pub fn create_dir(path: &PathBuf) -> std::io::Result<()> {
         create_dir(path)?;
         Ok(())

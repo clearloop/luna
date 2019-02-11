@@ -13,9 +13,9 @@ pub struct Revolver {
 
 impl Revolver {
     pub fn locate() -> Self {
-        let home = dirs::home_dir().unwrap();
+        let home = IO::home_dir();
         let _ = IO::create_dir(&home.join(".luna"));
-        let luna = &home.join(".luna");        
+        let luna = &home.join(".luna");
 
         Revolver {
             pool:  IO::locate(&luna.join("pool")),

@@ -216,6 +216,7 @@ name = "luna"
 version = "0.1.0"
 dependencies = [
  "primitive 0.1.0",
+ "spaceboy 0.1.0",
  "thruster 0.1.0",
 ]
 
@@ -471,6 +472,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "spaceboy"
+version = "0.1.0"
+dependencies = [
+ "thruster 0.1.0",
+]
+
+[[package]]
 name = "subtle"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -500,7 +508,6 @@ dependencies = [
 name = "thruster"
 version = "0.1.0"
 dependencies = [
- "dirs 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "primitive 0.1.0",
 ]
 
