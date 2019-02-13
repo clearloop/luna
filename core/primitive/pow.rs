@@ -2,7 +2,7 @@
 use std::cmp::Ordering;
 use std::ops::Shl;
 use num_bigint::{BigInt, Sign};
-use crate::utils::{hmac, hex};
+use super::utils::{hmac, hex};
 
 /// How to control the mining time?
 #[derive(Debug, Clone)]

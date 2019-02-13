@@ -1,6 +1,6 @@
 // Guardian
-use crate::Cowboy;
-use primitive::tx::{Transaction, TxInput, TxOutput};
+use super::Cowboy;
+use crate::primitive::{TxInput, TxOutput, Transaction};
 
 /// # Transfer
 /// wrap account directly, keep some attr space to construct better in future.

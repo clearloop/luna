@@ -1,8 +1,6 @@
 // Velvet Goldminer
-use crate::Cowboy;
-use primitive::tx::{Transaction, TxInput};
-use primitive::pow::ProofOfWork;
-use primitive::barrel::Barrel;
+use super::Cowboy;
+use crate::primitive::{Barrel, ProofOfWork, Transaction, TxInput};
 
 /// # Miner Flow Chart
 /// -> Load Account

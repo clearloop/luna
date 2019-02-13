@@ -1,5 +1,12 @@
+[lib]
+path = "./core.rs"
+
+[[bin]]
+path = "./test.rs"
+name = "test"
+
 [package]
-name = "primitive"
+name = "core"
 version = "0.1.0"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"

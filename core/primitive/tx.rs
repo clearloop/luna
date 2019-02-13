@@ -1,10 +1,9 @@
 // TX
-// use std::ops::{Deref, DerefMut};
 use crate::bytes;
-use crate::utils::hmac;
+use super::utils::hmac;
 use bincode::{serialize, deserialize};
+use ed25519_dalek::{PublicKey, Signature};
 use serde_derive::{Serialize, Deserialize};
-use ed25519_dalek::{ PublicKey, Signature };
 
 /// # TxInput
 /// @id - H256
@@ -22,8 +21,7 @@ impl TxInput {
     pub fn verify(&self, msg: Vec<u8>) -> bool {
         let pub_key = PublicKey::from_bytes(&self.pub_key).unwrap();
         pub_key.verify(
-            &msg,
-            &Signature::from_bytes(&self.signature).unwrap()
+            &msg, &Signature::from_bytes(&self.signature).unwrap()
         ).is_ok()
     }
 }
@@ -52,11 +50,29 @@ impl Transaction {
 
         id.append(&mut vin.clone());
         id.append(&mut vout.clone());
-        
+
         Transaction { txid: hmac(&id), vin: vin, vout: vout }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct TransactionArray(Vec<Transaction>);
+
+impl TransactionArray {
+    pub fn new() -> TransactionArray {
+        TransactionArray::default()
+    }
+    
+    pub fn push(&mut self, tx: Transaction) {
+        self.0.push(tx)
+    }
+
+    pub fn append(&mut self, mut tx: TransactionArray) {
+        self.0.append(&mut tx.0)
     }
 }
 
 bytes!(TxInput);
 bytes!(TxOutput);
 bytes!(Transaction);
+bytes!(TransactionArray);

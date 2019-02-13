@@ -14,20 +14,24 @@ impl IO {
     pub fn home_dir() -> PathBuf {
         dirs::home_dir().unwrap()
     }
-    
+
     pub fn create_dir(path: &PathBuf) -> std::io::Result<()> {
         create_dir(path)?;
         Ok(())
     }
-    
+
     pub fn locate(path: &PathBuf) -> Self {
         IO { path: path.to_path_buf() }
     }
 
     pub fn exists(&self) -> bool {
         self.path.as_path().exists()
-    }    
-    
+    }
+
+    pub fn clean(&self) -> std::io::Result<()> {
+        std::fs::remove_file(&self.path)
+    }
+
     pub fn push<B>(&self, data: B) -> std::io::Result<()>
     where B: std::convert::AsRef<[u8]>
     {

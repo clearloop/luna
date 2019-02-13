@@ -1,6 +1,6 @@
 // Barrel
 use crate::bytes;
-use crate::utils::{hmac, ts};
+use super::utils::{hmac, ts};
 use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
 
