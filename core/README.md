@@ -1,15 +1,15 @@
 # Luna - Core Library
-Romantic Code, Easy coding.
+Romantic Code, Easy Coding.
 
 ## Features
-Each mod in `luna/core` means a `code layer`.
+Each mod in `luna/core` represents a `code layer`.
 
-## Dependency relationship
+## Dependency Relationship
 
 + `primitive`
 
-is the base layer, based on the `std lib` and awesome `crates` from developers.
+    `primitive` is the basic layer, based on the `std` library and a few awesome `crates` from rust developers.
 
 + `thruster` and `spaceboy`
 
-`thruster` based on `primitive`, `space` based on `thruster`, directly.
+    `thruster` based on `primitive`, `space` based on `thruster`, directly.

@@ -29,9 +29,9 @@ pub fn ts() -> u64 {
 }
 
 //@Convert
-pub fn hex<B>(bytes: B) -> String
-where B: std::convert::AsRef<[u8]> {
-    let mut hex = String::new();
-    hex.extend(bytes.as_ref().iter().map(|byte| format!("{:02x}", byte)));
-    hex
-}
+// pub fn hex<B>(bytes: B) -> String
+// where B: std::convert::AsRef<[u8]> {
+//     let mut hex = String::new();
+//     hex.extend(bytes.as_ref().iter().map(|byte| format!("{:02x}", byte)));
+//     hex
+// }

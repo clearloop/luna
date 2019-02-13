@@ -1,5 +1,5 @@
 // TX
-use crate::bytes;
+use crate::{bytes, partition};
 use super::utils::hmac;
 use bincode::{serialize, deserialize};
 use ed25519_dalek::{PublicKey, Signature};
@@ -55,24 +55,7 @@ impl Transaction {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct TransactionArray(Vec<Transaction>);
-
-impl TransactionArray {
-    pub fn new() -> TransactionArray {
-        TransactionArray::default()
-    }
-    
-    pub fn push(&mut self, tx: Transaction) {
-        self.0.push(tx)
-    }
-
-    pub fn append(&mut self, mut tx: TransactionArray) {
-        self.0.append(&mut tx.0)
-    }
-}
-
 bytes!(TxInput);
 bytes!(TxOutput);
 bytes!(Transaction);
-bytes!(TransactionArray);
+partition!(Transaction, TransactionArray);

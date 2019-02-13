@@ -1,13 +1,12 @@
 // Revolver
 use super::Cowboy;
-use crate::primitive::{IO, Transaction, TransactionArray};
+use crate::primitive::{IO, Transaction, TransactionArray, Barrel, BarrelChain};
 
 ///IO Efficiency
 ///TODO: files' size, just like, 00, 01...
 pub struct Revolver {
     pool:  IO,
-    pub chain: IO,
-    pub state: IO,
+    chain: IO,
     cowboy: IO
 }
 
@@ -20,7 +19,6 @@ impl Revolver {
         Revolver {
             pool:  IO::locate(&luna.join("pool")),
             chain: IO::locate(&luna.join("chain")),
-            state: IO::locate(&luna.join("state")),
             cowboy: IO::locate(&luna.join("cowboy"))
         }
     }
@@ -31,10 +29,6 @@ impl Revolver {
         }
 
         Ok(Cowboy::from_bytes(self.cowboy.pull()?))
-    }
-
-    pub fn empty_pool(&self) -> std::io::Result<()> {
-        self.pool.clean()
     }
 
     pub fn push_to_pool(&self, bytes: Vec<u8>) -> std::io::Result<()> {
@@ -49,7 +43,31 @@ impl Revolver {
         self.pool.push(txs.to_bytes())
     }
 
-    pub fn scan_pool(&self) -> std::io::Result<(Vec<u8>)> {
-        self.pool.pull()
+    pub fn scan_pool(&self) -> std::io::Result<(TransactionArray)> {
+        Ok(TransactionArray::from_bytes(self.pool.pull()?))
+    }
+
+    pub fn empty_pool(&self) -> std::io::Result<()> {
+        self.pool.clean()
+    }
+
+    pub fn stretch_chain(&self, bytes: Vec<u8>) -> std::io::Result<()> {
+        let chain_bytes = self.chain.pull();
+        let mut bc: BarrelChain;
+        match chain_bytes.is_ok() {
+            true => bc = BarrelChain::from_bytes(chain_bytes.unwrap()),
+            false => bc = BarrelChain::default()
+        }
+
+        bc.push(Barrel::from_bytes(bytes));
+        self.chain.push(bc.to_bytes())
+    }
+
+    pub fn scan_chain(&self) -> std::io::Result<(BarrelChain)> {
+        Ok(BarrelChain::from_bytes(self.chain.pull()?))
+    }
+
+    pub fn empty_chain(&self) -> std::io::Result<()> {
+        self.chain.clean()
     }
 }

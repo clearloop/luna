@@ -10,6 +10,6 @@ pub mod control;
 pub use self::io::IO;
 pub use self::tx::{Transaction, TransactionArray, TxInput, TxOutput};
 pub use self::pow::ProofOfWork;
-pub use self::barrel::Barrel;
+pub use self::barrel::{Barrel, BarrelChain};
 pub use self::cowboy::Cowboy;
 pub use self::control::{CLI, Command};

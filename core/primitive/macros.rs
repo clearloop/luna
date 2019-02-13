@@ -30,3 +30,24 @@ macro_rules! deref {
         }
     }
 }
+
+//@partition
+#[macro_export]
+macro_rules! partition {
+    ($name: ident, $partition: ident) => {
+        #[derive(Serialize, Deserialize, Debug, Default)]
+        pub struct $partition(pub Vec<$name>);
+
+        impl $partition {
+            pub fn len(&self) -> usize {
+                self.0.len()
+            }
+
+            pub fn push(&mut self, tx: $name) {
+                self.0.push(tx)
+            }
+        }
+
+        bytes!($partition);
+    }
+}

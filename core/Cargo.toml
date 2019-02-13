@@ -1,5 +1,5 @@
 [lib]
-path = "./core.rs"
+path = "./lib.rs"
 
 [[bin]]
 path = "./test.rs"
