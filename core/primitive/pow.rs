@@ -43,3 +43,15 @@ impl ProofOfWork {
         (nonce, barrel_hash)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::ProofOfWork;
+    #[test]
+    fn pow() {
+        let mut pow = ProofOfWork::new([0_u8; 8].to_vec(), 10);
+        let (nonce, hash) = pow.run();
+        assert_ne!(nonce, 0);
+        assert_eq!(hash.len(), 32);
+    }
+}

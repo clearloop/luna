@@ -7,7 +7,7 @@ use sha2::{Sha256, Digest};
 ///+ Timestamp
 ///+ Disk I/O
 ///+ Convert
-//@H512 
+//@H256
 pub fn hmac<B>(data: B) -> [u8;32]
 where B: std::convert::AsRef<[u8]>
 {
@@ -29,9 +29,37 @@ pub fn ts() -> u64 {
 }
 
 //@Convert
-// pub fn hex<B>(bytes: B) -> String
-// where B: std::convert::AsRef<[u8]> {
-//     let mut hex = String::new();
-//     hex.extend(bytes.as_ref().iter().map(|byte| format!("{:02x}", byte)));
-//     hex
-// }
+pub fn hex<B>(bytes: B) -> String
+where B: std::convert::AsRef<[u8]> {
+    let mut hex = String::new();
+    hex.extend(bytes.as_ref().iter().map(|byte| format!("{:02x}", byte)));
+    hex
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{thread, time};
+    #[test]
+    fn hex_hash() {
+        let hash = hmac(b"halo, spaceboy");
+        assert_eq!(hash.len(), 32);
+            
+        let hash_hex = hex(hash);
+        assert_eq!(hash_hex.len(), 64);
+    }
+
+    #[test]
+    fn time_flys() {
+        let ten_millis = time::Duration::from_millis(10);
+
+        let time = ts();
+        thread::sleep(ten_millis);
+        
+        let flys = ts();
+        assert_eq!(
+            flys.cmp(&time),
+            std::cmp::Ordering::Greater
+        )
+    }
+}

@@ -23,6 +23,6 @@ impl Guardian<Cowboy> for Cowboy {
             pub_key: to
         };
 
-        Transaction::new(txin.to_bytes(), txout.to_bytes())
+        Transaction::new(txin, txout)
     }
 }

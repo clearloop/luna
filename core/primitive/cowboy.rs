@@ -24,3 +24,12 @@ impl Cowboy {
 
 bytes!(Cowboy);
 deref!(Cowboy, Keypair);
+
+#[cfg(test)]
+mod tests {
+    use super::Cowboy;
+    #[test]
+    fn unique_cowboy() {
+        assert_ne!(Cowboy::born().to_bytes(), Cowboy::born().to_bytes());
+    }
+}

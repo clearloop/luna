@@ -35,17 +35,17 @@ macro_rules! deref {
 #[macro_export]
 macro_rules! partition {
     ($name: ident, $partition: ident) => {
-        #[derive(Serialize, Deserialize, Debug, Default)]
+        #[derive(Serialize, Deserialize, Debug, Default, PartialEq)]
         pub struct $partition(pub Vec<$name>);
 
-        impl $partition {
-            pub fn len(&self) -> usize {
-                self.0.len()
-            }
+        impl Deref for $partition {
+            type Target = Vec<$name>;
+            
+            fn deref(&self) -> &Self::Target { &self.0 }
+        }
 
-            pub fn push(&mut self, tx: $name) {
-                self.0.push(tx)
-            }
+        impl DerefMut for $partition {
+            fn deref_mut(&mut self) -> &mut Self::Target { &mut self.0 }
         }
 
         bytes!($partition);
