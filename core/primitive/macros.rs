@@ -35,7 +35,7 @@ macro_rules! deref {
 #[macro_export]
 macro_rules! partition {
     ($name: ident, $partition: ident) => {
-        #[derive(Serialize, Deserialize, Debug, Default, PartialEq)]
+        #[derive(Clone, Serialize, Deserialize, Debug, Default, PartialEq)]
         pub struct $partition(pub Vec<$name>);
 
         impl Deref for $partition {

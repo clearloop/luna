@@ -11,19 +11,21 @@ use serde_derive::{Serialize, Deserialize};
 /// @id - H256
 /// @signature - Signature
 /// @pub_key - PublicKey
-#[derive(Serialize, Deserialize, Clone, Default, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct TxInput {
     // no &'static, value does not live long enough.
     pub msg: Vec<u8>,
-    pub pub_key: [u8; 32],
+    pub from: [u8; 32],
     pub signature: Vec<u8>
 }
 
 impl TxInput {
-    pub fn verify(&self, msg: Vec<u8>, pub_key: [u8; 32]) -> bool {
+    pub fn verify(&self, msg: &'static str, pub_key: [u8; 32]) -> bool {
         let public = PublicKey::from_bytes(&pub_key).unwrap();
+        let msg_bytes = String::from(msg).as_bytes().to_vec();
+
         public.verify(
-            &msg, &Signature::from_bytes(&self.signature).unwrap()
+            &msg_bytes, &Signature::from_bytes(&self.signature).unwrap()
         ).is_ok()
     }
 }
@@ -31,29 +33,30 @@ impl TxInput {
 impl fmt::Debug for TxInput {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result{
         write!(f, "TxInput {{ \n  msg: {:?}, \n  pub_key: 0x{}, \nsignature: {}\n}}",
-               String::from_utf8(self.msg.to_owned()), hex(self.pub_key), hex(&self.signature))
+               String::from_utf8(self.msg.to_owned()), hex(self.from), hex(&self.signature))
     }
 }
 
 /// # TxOutput
 /// @pub_key - PublicKey
-#[derive(Serialize, Clone, Deserialize, Default, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct TxOutput {
     pub value: i32,
-    pub pub_key: [u8; 32]
+    pub to: [u8; 32]
 }
 
 impl fmt::Debug for TxOutput {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result{
         write!(f, "TxOutput {{ \n  value: {}, \n  pub_key: {}\n}}",
-               self.value, hex(self.pub_key))
+               self.value, hex(self.to))
     }
 }
 
 /// # Transaction
 /// @vin - TxInput ; no Vec<>
 /// @vout - TxOutput ; no Vec<>
-#[derive(Serialize, Debug, Deserialize, Default, PartialEq)]
+/// TODO: Coinbase
+#[derive(Clone, Serialize, Debug, Deserialize, Default, PartialEq)]
 pub struct Transaction {
     pub vin: TxInput,
     pub vout: TxOutput,
@@ -69,6 +72,23 @@ impl Transaction {
 
         Transaction { txid: hmac(&id), vin: vin, vout: vout }
     }
+
+    pub fn reward(msg: &'static str, miner: [u8;32]) -> Self {
+        let msg_s = String::from(msg).as_bytes().to_vec();
+
+        let txin = TxInput {
+            msg: msg_s.to_owned(),
+            from: [0_u8; 32],
+            signature: vec![]
+        };
+
+        let txout = TxOutput {
+            value: 10,
+            to: miner
+        };
+
+        Transaction::new(txin, txout)
+    }
 }
 
 bytes!(TxInput);
@@ -80,16 +100,16 @@ partition!(Transaction, TransactionArray);
 mod tests {
     use super::{TxInput, TxOutput, Transaction, TransactionArray};
     #[test]
-    fn bytes_convert() {
+    fn generate() {
         let vin = TxInput {
             msg: "halo, spaceboy".as_bytes().to_vec(),
-            pub_key: [0_u8;32],
+            from: [0_u8;32],
             signature: vec![0_u8;64]
         };
 
         let vout = TxOutput {
             value: 10,
-            pub_key: [0_u8;32]
+            to: [0_u8;32]
         };
 
         let tx = Transaction::new(vin, vout);

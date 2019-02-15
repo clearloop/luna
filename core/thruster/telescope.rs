@@ -17,6 +17,6 @@ impl Telescope for Cowboy {
             break;
         }
 
-        sum 
+        sum
     }
 }

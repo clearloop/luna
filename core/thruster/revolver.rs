@@ -2,72 +2,132 @@
 use super::Cowboy;
 use crate::primitive::{IO, Transaction, TransactionArray, Barrel, BarrelChain};
 
+#[derive(Clone)]
+struct Wheel {
+    pub pool:  IO,
+    pub chain: IO,
+    pub cowboy: IO
+}
+
+impl Wheel {
+    pub fn new(
+        pool: &'static str,
+        chain: &'static str,
+        cowboy: &'static str
+    ) -> Self {
+        let pool = IO::locate(pool);
+        let chain = IO::locate(chain);
+        let cowboy = IO::locate(cowboy);
+
+        Wheel {
+            pool: pool,
+            chain: chain,
+            cowboy: cowboy
+        }
+    }
+
+    /// ErrKind: can't convert
+    pub fn master(&self) -> Cowboy {
+        if self.cowboy.pull().len() == 0 {
+            self.cowboy.push(Cowboy::born().to_bytes());
+        }
+        
+        Cowboy::from_bytes(self.cowboy.pull())
+    }
+
+    /// ErrKind: can't convert
+    pub fn scan_pool(&self) -> TransactionArray {
+        if self.pool.pull().len() == 0 {
+            self.pool.push(TransactionArray::default().to_bytes())
+        }
+        
+        TransactionArray::from_bytes(self.pool.pull())
+    }
+
+    pub fn fill_pool(&self, txs: &TransactionArray) {
+            self.pool.push(txs.to_bytes())
+    }
+
+    /// ErrKind: can't convert
+    pub fn scan_chain(&self) -> BarrelChain {
+        if self.chain.pull().len() == 0 {
+            self.chain.push(BarrelChain::default().to_bytes());
+        }
+
+        BarrelChain::from_bytes(self.chain.pull())
+    }
+
+    pub fn stretch_chain(&self, bc: &BarrelChain) {
+        self.chain.push(bc.to_bytes())
+    }
+}
+
 ///IO Efficiency
 ///TODO: files' size, just like, 00, 01...
 pub struct Revolver {
-    pool:  IO,
-    chain: IO,
-    cowboy: IO
+    wheel: Wheel,
+    pub pool:  TransactionArray,
+    pub chain: BarrelChain
 }
 
 impl Revolver {
+    pub fn new(p: &'static str, c: &'static str, cb: &'static str) -> Self {
+        let wheel = Wheel::new(p, c, cb);
+
+        Revolver{
+            wheel: wheel.clone(),
+            pool: wheel.scan_pool(),
+            chain: wheel.scan_chain()
+        }
+    }
+
     pub fn locate() -> Self {
-        let home = IO::home_dir();
-        let _ = IO::create_dir(&home.join(".luna"));
-        let luna = &home.join(".luna");
-
-        Revolver {
-            pool:  IO::locate(&luna.join("pool")),
-            chain: IO::locate(&luna.join("chain")),
-            cowboy: IO::locate(&luna.join("cowboy"))
-        }
+        Revolver::new("pool", "chain", "cowboy")
     }
 
-    pub fn master(&self) -> std::io::Result<Cowboy> {
-        if &self.cowboy.exists() == &false {
-            &self.cowboy.push(Cowboy::born().to_bytes())?;
-        }
+    pub fn master(&self) -> Cowboy {
+        self.wheel.master()
+    }    
 
-        Ok(Cowboy::from_bytes(self.cowboy.pull()?))
+    pub fn shoot(&mut self, tx: Transaction) {
+        &self.pool.push(tx);
+        &self.wheel.fill_pool(&self.pool);
+        self.pool = self.wheel.scan_pool();
     }
 
-    pub fn push_to_pool(&self, bytes: Vec<u8>) -> std::io::Result<()> {
-        let pool_bytes = self.pool.pull();
-        let mut txs: TransactionArray;
-        match pool_bytes.is_ok() {
-            true => txs = TransactionArray::from_bytes(pool_bytes.unwrap()),
-            false => txs = TransactionArray::default()
-        }
+    pub fn revolve(&mut self, bc: Barrel) {
+        &self.chain.push(bc);
+        &self.wheel.stretch_chain(&self.chain);
+        self.chain = self.wheel.scan_chain();
 
-        txs.push(Transaction::from_bytes(bytes));
-        self.pool.push(txs.to_bytes())
+        self.wheel.pool.clean();
     }
 
-    pub fn scan_pool(&self) -> std::io::Result<(TransactionArray)> {
-        Ok(TransactionArray::from_bytes(self.pool.pull()?))
+    pub fn explode(&self) {
+        self.wheel.pool.clean();
+        self.wheel.chain.clean();
+        self.wheel.cowboy.clean();
     }
+}
 
-    pub fn empty_pool(&self) -> std::io::Result<()> {
-        self.pool.clean()
-    }
 
-    pub fn stretch_chain(&self, bytes: Vec<u8>) -> std::io::Result<()> {
-        let chain_bytes = self.chain.pull();
-        let mut bc: BarrelChain;
-        match chain_bytes.is_ok() {
-            true => bc = BarrelChain::from_bytes(chain_bytes.unwrap()),
-            false => bc = BarrelChain::default()
-        }
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn revolver() {
+        let revolver = Revolver::new("test_pool", "test_chain", "test_cowboy");
+        
+        assert_eq!(revolver.pool.len(), 0);
+        assert_eq!(revolver.pool.to_bytes().len(), 8);
+        assert_eq!(revolver.pool, TransactionArray::default());
 
-        bc.push(Barrel::from_bytes(bytes));
-        self.chain.push(bc.to_bytes())
-    }
+        assert_eq!(revolver.chain.len(), 0);
+        assert_eq!(revolver.chain.to_bytes().len(), 8);
+        assert_eq!(revolver.chain, BarrelChain::default());
 
-    pub fn scan_chain(&self) -> std::io::Result<(BarrelChain)> {
-        Ok(BarrelChain::from_bytes(self.chain.pull()?))
-    }
+        assert_eq!(revolver.master().to_bytes().len(), 72);
 
-    pub fn empty_chain(&self) -> std::io::Result<()> {
-        self.chain.clean()
+        revolver.explode();
     }
 }

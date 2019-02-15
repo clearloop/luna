@@ -78,6 +78,15 @@ what about replace `mine` to `drink`???
 ### Network
 Basic Network Interface, implement tcp server/client at mod `primitive`.
 
+### Transaction
++ [x] Sign
++ [x] Verify
++ [ ] `usize` problem
+
+### Miner
++ [ ] Coinbase
++ [ ] Miner Special Reward
+
 <br>
 
 ## In Progress
@@ -86,7 +95,7 @@ A layer aims to scan barrel-chain,  checkout the value of each account, located 
 
 <br>
 
-## Reflecting
+## Reflecting Thoughts
 ### Times
 "Blockchain" time, isn't it? people talking about "Blockchain", and the developers developing operating system without prior consultation, secretly, something is ending, and, some changing is happening.
 

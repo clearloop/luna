@@ -2,42 +2,41 @@
 use super::Cowboy;
 use crate::primitive::{Barrel, ProofOfWork, Transaction, TransactionArray};
 
-/// # Miner Flow Chart
-/// -> Load Account
-/// -> Sync Transaction Pool
-/// -> Pack Transaction
-/// -> Proof of Work
-/// -> Pending Block
-/// -> Boardcast
-/// -> Blockchain Scale
-/// -> Reward(vout)
 pub trait Miner<T> {
     fn mine<B>(&self, msg: B, txs: TransactionArray, miner: [u8; 32]) -> Barrel
     where B: std::convert::AsRef<[u8]>;
-    fn verify(&self, msg: &'static str, tx: Transaction, pub_key: [u8; 32]) -> bool;
-    fn genesis(&self) -> Vec<u8>;
 }
 
 impl Miner<Cowboy> for Cowboy {
-    fn mine<B>(&self, msg: B, txs: TransactionArray, pre_hash: [u8; 32]) -> Barrel
+    fn mine<B>(&self, msg: B, mut txs: TransactionArray, pre_hash: [u8; 32]) -> Barrel
     where B: std::convert::AsRef<[u8]> {
-        let barrel = Barrel::new(msg, txs.to_bytes(), pre_hash, self.public.to_bytes());
+        txs.push(Transaction::reward("reward", self.public.to_bytes()));
+        let barrel = Barrel::new(msg, txs.to_bytes(), pre_hash);
         let mut pow = ProofOfWork::new(barrel.to_bytes(), 10);
 
         let (nonce, _) = pow.run();
         barrel.nonce(nonce)
     }
+}
 
-    fn genesis(&self) -> Vec<u8> {
-        Barrel::new(
-            "Take your protein pills and put your helmet on.",
-            vec![], [0_u8; 32], self.public.to_bytes()
-        ).to_bytes()
-    }
-
-    fn verify(&self, msg: &'static str, tx: Transaction, pub_key: [u8; 32]) -> bool {
-        let msg_s = String::from(msg).as_bytes().to_vec();
-
-        tx.vin.verify(msg_s, pub_key)
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn miner() {
+        let cowboy = Cowboy::born();
+        let barrel = cowboy.mine(
+            "halo, spaceboy", TransactionArray::default(), [0_u8;32]
+        );
+        
+        let txs = TransactionArray::from_bytes(barrel.body.txs);
+        assert_eq!(txs.len(), 1);
+        
+        assert_eq!(txs[0].vin.msg, String::from("reward").as_bytes());
+        assert_eq!(txs[0].vin.from, [0_u8;32]);
+        assert_eq!(txs[0].vin.signature, []);
+        
+        assert_eq!(txs[0].vout.value, 10);
+        assert_eq!(txs[0].vout.to, cowboy.public.to_bytes());
     }
 }

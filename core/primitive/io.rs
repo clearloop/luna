@@ -1,4 +1,4 @@
-// db
+// io
 use std::path::PathBuf;
 use std::io::{Write, Read};
 use std::fs::{File, create_dir, OpenOptions};
@@ -6,55 +6,52 @@ use std::fs::{File, create_dir, OpenOptions};
 /// # IO
 /// need data structure that stand alone
 /// real push and pull
+#[derive(Clone)]
 pub struct IO {
     path: PathBuf
 }
 
 impl IO {
-    pub fn locate(path: &PathBuf) -> Self {
-        IO { path: path.to_path_buf() }
-    }
-
-    pub fn clean(&self) -> std::io::Result<()> {
-        match &self.path.as_path().is_dir() {
-            true => std::fs::remove_dir(&self.path),
-            false => std::fs::remove_file(&self.path),
+    //@test: create dir, create file
+    /// ErrKind: Write Authority, Bubble
+    pub fn locate(path: &'static str) -> Self {
+        let home_dir = dirs::home_dir().unwrap();
+        let luna = home_dir.join(".luna");
+        if luna.exists() == false {
+            create_dir(&luna).unwrap();
         }
         
+        let target = luna.join(path);
+        File::create(&target).unwrap();
+        
+        IO { path: target }
     }
 
-    pub fn exists(&self) -> bool {
-        self.path.as_path().exists()
-    }
-    
-    pub fn home_dir() -> PathBuf {
-        dirs::home_dir().unwrap()
+    //@test: remove file
+    /// ErrKind: Write Authority, `unwrap()` directly.
+    pub fn clean(&self) {
+        std::fs::remove_file(&self.path).unwrap()
     }
 
-    pub fn create_dir(path: &PathBuf) -> std::io::Result<()> {
-        create_dir(path)?;
-        Ok(())
-    }    
-
-    pub fn push<B>(&self, data: B) -> std::io::Result<()>
-    where B: std::convert::AsRef<[u8]>
-    {
+    //@test: write file
+    /// ErrKind: Write Authority, __Bubble__
+    pub fn push<B>(&self, data: B) 
+    where B: std::convert::AsRef<[u8]> {
         let mut file = OpenOptions::new()
-            .write(true)
-            .create(true)
-            .open(&self.path)?;
+            .write(true).open(&self.path).unwrap();
 
-        file.write_all(data.as_ref())?;
-        file.flush()?;
-        Ok(())
+        file.write_all(data.as_ref()).unwrap();
+        file.flush().unwrap()
     }
 
-    pub fn pull(&self) -> std::io::Result<(Vec<u8>)> {
-        let mut file = File::open(&self.path)?;
+    //@test: read file
+    /// ErrKind: Read Authority, Redirect to create and write.
+    pub fn pull(&self) -> Vec<u8> {
+        let mut file = File::open(&self.path).unwrap();
         let mut content = vec![];
 
         file.read_to_end(&mut content).unwrap();
-        Ok(content)
+        content
     }
 }
 
@@ -63,22 +60,13 @@ mod tests {
     use super::IO;
     #[test]
     fn handler() {
-        let home = IO::home_dir();
-        let luna = home.join(".luna");
-        
-        let dir = IO::locate(&luna.join("tests"));
-        assert_eq!(dir.exists(), false);
-        assert_eq!(IO::create_dir(&dir.path).is_ok(), true);
-        assert_eq!(dir.exists(), true);
-        assert_eq!(dir.clean().is_ok(), true);
-        assert_eq!(dir.exists(), false);
-        
-        let file = IO::locate(&luna.join("tests"));
-        assert_eq!(file.exists(), false);
-        assert_eq!(file.push(b"halo, spaceboy").is_ok(), true);
-        assert_eq!(file.exists(), true);
-        assert_eq!(file.pull().unwrap(), b"halo, spaceboy");
-        assert_eq!(file.clean().is_ok(), true);
-        assert_eq!(file.exists(), false);
-    }    
+        let file = IO::locate("test_file");
+        assert_eq!(file.path.exists(), true);
+
+        file.push(b"halo, spaceboy");
+        assert_eq!(file.pull(), b"halo, spaceboy");
+
+        file.clean();
+        assert_eq!(file.path.exists(), false);
+    }
 }
