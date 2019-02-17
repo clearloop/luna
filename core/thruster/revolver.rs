@@ -51,7 +51,16 @@ impl Wheel {
     /// ErrKind: can't convert
     pub fn scan_chain(&self) -> BarrelChain {
         if self.chain.pull().len() == 0 {
-            self.chain.push(BarrelChain::default().to_bytes());
+            let mut bc = BarrelChain::default();
+            let mut txs = TransactionArray::default();
+            
+            let tx = Transaction::reward("Genesis Transaction", [0_u8; 32]);
+            txs.push(tx);
+
+            let barrel = Barrel::new("Genesis Block", txs.to_bytes(), [0_u8;32]);
+            bc.push(barrel);
+            
+            self.chain.push(bc.to_bytes());
         }
 
         BarrelChain::from_bytes(self.chain.pull())
@@ -71,23 +80,19 @@ pub struct Revolver {
 }
 
 impl Revolver {
-    pub fn new(p: &'static str, c: &'static str, cb: &'static str) -> Self {
+    pub fn locate(p: &'static str, c: &'static str, cb: &'static str) -> Self {
         let wheel = Wheel::new(p, c, cb);
 
-        Revolver{
+        Revolver {
             wheel: wheel.clone(),
             pool: wheel.scan_pool(),
             chain: wheel.scan_chain()
         }
     }
 
-    pub fn locate() -> Self {
-        Revolver::new("pool", "chain", "cowboy")
-    }
-
     pub fn master(&self) -> Cowboy {
         self.wheel.master()
-    }    
+    }
 
     pub fn shoot(&mut self, tx: Transaction) {
         &self.pool.push(tx);
@@ -104,30 +109,30 @@ impl Revolver {
     }
 
     pub fn explode(&self) {
-        self.wheel.pool.clean();
+        if self.wheel.pool.path.exists() {
+            self.wheel.pool.clean();
+        }
+        
         self.wheel.chain.clean();
         self.wheel.cowboy.clean();
     }
 }
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
     fn revolver() {
-        let revolver = Revolver::new("test_pool", "test_chain", "test_cowboy");
+        let revolver = Revolver::locate("test_pool", "test_chain", "test_cowboy");
         
         assert_eq!(revolver.pool.len(), 0);
         assert_eq!(revolver.pool.to_bytes().len(), 8);
         assert_eq!(revolver.pool, TransactionArray::default());
 
-        assert_eq!(revolver.chain.len(), 0);
-        assert_eq!(revolver.chain.to_bytes().len(), 8);
-        assert_eq!(revolver.chain, BarrelChain::default());
+        assert_eq!(revolver.chain.len(), 1);
+        assert_eq!(revolver.chain.to_bytes().len(), 239);
 
         assert_eq!(revolver.master().to_bytes().len(), 72);
-
         revolver.explode();
     }
 }

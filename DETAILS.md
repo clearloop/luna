@@ -25,8 +25,6 @@ Just like `database`, `crypto` is also a quite serious challenge, for now, wraps
 ### Virtual Machine
 Virtual Machine is the __hardcore__ part in luna, as the same of other thoughts, neither `wasm` nor `risc-v` now, exploring the essence of using.
 
-<br>
-
 ## Idle
 Refer fo `layer` model, during `Proof of Concept`.
 
@@ -72,8 +70,6 @@ what about replace `mine` to `drink`???
 + [ ] Machine computing
 + [ ] State Convert
 
-<br>
-
 ## To Do
 ### Network
 Basic Network Interface, implement tcp server/client at mod `primitive`.
@@ -87,13 +83,9 @@ Basic Network Interface, implement tcp server/client at mod `primitive`.
 + [ ] Coinbase
 + [ ] Miner Special Reward
 
-<br>
-
 ## In Progress
 ### UTXO
 A layer aims to scan barrel-chain,  checkout the value of each account, located at mod `spaceboy`, like a tracker, named `telescope` in luna, yep, cowboy's telescope.
-
-<br>
 
 ## Reflecting Thoughts
 ### Times

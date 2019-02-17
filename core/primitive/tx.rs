@@ -56,11 +56,18 @@ impl fmt::Debug for TxOutput {
 /// @vin - TxInput ; no Vec<>
 /// @vout - TxOutput ; no Vec<>
 /// TODO: Coinbase
-#[derive(Clone, Serialize, Debug, Deserialize, Default, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Transaction {
     pub vin: TxInput,
     pub vout: TxOutput,
     pub txid: [u8;32]
+}
+
+impl fmt::Debug for Transaction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result{
+        write!(f, "Transactionn {{ \n  vin: {:?}, \n  vout: {:?}, \n  txid: {:?} }}",
+               self.vin, self.vout, hex(self.txid))
+    }
 }
 
 impl Transaction {

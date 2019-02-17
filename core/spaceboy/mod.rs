@@ -7,8 +7,8 @@ pub struct Spaceboy {
 }
 
 impl Spaceboy {
-    pub fn hello() -> Spaceboy {
-        let revolver = Revolver::locate();
+    pub fn new(pool: &'static str, chain: &'static str, cowboy: &'static str) -> Spaceboy {
+        let revolver = Revolver::locate(pool, chain, cowboy);
         let cowboy = revolver.master();
     
         Spaceboy {
@@ -16,13 +16,23 @@ impl Spaceboy {
             revolver: revolver
         }
     }
+    
+    pub fn hello() -> Spaceboy {
+        Spaceboy::new("pool", "chain", "cowboy")
+    }
 
-    pub fn balance(&mut self) {
-        println!("{:#?}", self.master.utxo(
+    pub fn watch(&mut self, account: [u8;32]) -> usize {
+        self.master.utxo(
+            account, self.revolver.chain.to_owned()
+        )
+    }
+    
+    pub fn balance(&mut self) -> usize {
+        self.master.utxo(
             self.master.public.to_bytes(),
             self.revolver.chain.to_owned()
-        ));
-    }
+        )
+    }    
 
     pub fn transfer(&mut self, value: i32, to: [u8; 32], msg: &'static str) {
         let tx = self.master.load(value, to, msg);
@@ -31,12 +41,28 @@ impl Spaceboy {
     
     pub fn pack(&mut self, msg: &'static str) {
         let bc = &self.revolver.chain;
-        let pre_hash = bc.0[(&bc.len() - 1 as usize)].head.hash;
+        let pre_hash = bc[(bc.len() -1) as usize].head.hash;
 
         let barrel = &self.master.mine(
             String::from(msg).as_bytes(), self.revolver.pool.to_owned(), pre_hash
         );
 
         &self.revolver.revolve(barrel.to_owned());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn transfer_and_mine() {
+        let mut spaceboy = Spaceboy::new(
+            "test_pool_spaceboy",
+            "test_chain_spaceboy",
+            "test_cowboy_spaceboy"
+        );
+        spaceboy.transfer(10, [0_u8;32], "halo, spaceboy");
+        spaceboy.pack("pack");
+        spaceboy.revolver.explode();
     }
 }

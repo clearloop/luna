@@ -8,7 +8,7 @@ use std::fs::{File, create_dir, OpenOptions};
 /// real push and pull
 #[derive(Clone)]
 pub struct IO {
-    path: PathBuf
+    pub path: PathBuf
 }
 
 impl IO {
