@@ -104,6 +104,6 @@ pub struct TransactionArray(Vec<Transaction>);
 ## utils.rs
 ```rust
 pub fn ts() -> u64;
-pub fn hex<B: std::convert::AsRef<[u8]>(bytes: B) -> String;
+pub fn hex<B: std::convert::AsRef<[u8]>>(bytes: B) -> String;
 pub fn hmac<B: std::convert::AsRef<[u8]>>(data: B) -> [u8;32];
 ```

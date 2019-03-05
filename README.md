@@ -1,3 +1,8 @@
+# SUSPEND
+I'd like to pack `primitive` into a independent library called __Atlas__ to learn building VM, which dreams becoming an Operating System like __Fushcia__ one day, at the same time, a new Programming Language named __Sonata__, is in building, based on rust, as the starting point.
+
+As soon as __Atlas__ is good enough to use, I'll be back, monthes later, more infomation if you need, keep time on my [blog][wr].
+
 # Luna
 Luna is a peer to peer micro smart-contract platform.
 

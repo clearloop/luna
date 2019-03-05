@@ -50,7 +50,7 @@ mod tests {
     }
 
     #[test]
-    fn time_flys() {
+    fn time_flies() {
         let ten_millis = time::Duration::from_millis(10);
 
         let time = ts();
