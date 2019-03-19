@@ -1,5 +1,5 @@
 // Capsule
-use std::net::TcpListener;
+use std::net::{TcpListener, TcpStream};
 use rand::{thread_rng, Rng};
 
 /// # Capsule
@@ -11,15 +11,32 @@ use rand::{thread_rng, Rng};
 /// + Receive and update peers
 /// + Swarm peers
 pub struct Capsule {
-    pub host: TcpListener,
+    pub listener: TcpListener,
     pub peers: Vec<(&'static str, bool)>
 }
 
 impl Capsule {
-    pub fn bind(host: &'static str, peers: Vec<(&'static str, bool)>) -> Self {
+    pub fn bind(address: &'static str, peers: Vec<(&'static str, bool)>) -> Self {
+        println!("TCP Serve started at: {}", &address);
         Capsule {
-            host: TcpListener::bind(host).unwrap(),
+            listener: TcpListener::bind(address).unwrap(),
             peers: peers
+        }
+    }
+
+    /
+    // how to set thread orders???
+    pub fn handle(&self, func: &Fn(std::net::TcpStream)) {
+        for stream in self.listener.incoming() {
+            func(stream.unwrap());
+        }
+    }
+    
+    pub fn connect(&self, address: &'static str) {
+        if let Ok(stream) = TcpStream::connect(address) {
+            println!("Connected to the server!, stream: {:?}", stream);
+        } else {
+            println!("Couldn't connect to server...");
         }
     }
 
@@ -33,7 +50,7 @@ impl Capsule {
         let mut rng = thread_rng();
 
         if &self.peers.len() == &0 { return; }
-        let mut peers = vec![];
+        let peers: Vec<&'static str> = vec![];
 
         for (idx, _) in peers.iter().enumerate() {
             let n: u8 = rng.gen_range(0, (self.peers.len() - 1) as u8);
