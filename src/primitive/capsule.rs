@@ -24,8 +24,7 @@ impl Capsule {
         }
     }
 
-    /
-    // how to set thread orders???
+    /// how to set thread orders???
     pub fn handle(&self, func: &Fn(std::net::TcpStream)) {
         for stream in self.listener.incoming() {
             func(stream.unwrap());
@@ -68,7 +67,7 @@ mod tests {
     fn gossip() {
         let addr = "127.0.0.1:1439";
         let mut capsule = Capsule::bind(addr, vec![]);
-        assert_eq!(capsule.host.local_addr().unwrap().to_string(), addr);
+        assert_eq!(capsule.listener.local_addr().unwrap().to_string(), addr);
 
         let peers = vec![
             ("127.0.0.1:1440", false),

@@ -1,7 +1,8 @@
 // Telescope
 use super::Cowboy;
 use crate::primitive::{BarrelChain, TransactionArray};
-    
+
+/// Touch the Galaxy
 pub trait Telescope {
     fn utxo(&self, address: [u8; 32], barrel_chain: BarrelChain) -> usize;
 }

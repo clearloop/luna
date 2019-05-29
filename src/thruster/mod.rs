@@ -1,7 +1,7 @@
-pub mod revolver;
-pub mod telescope;
-pub mod velvet_goldminer;
-pub mod guardians_of_the_galaxy;
+mod revolver;
+mod telescope;
+mod velvet_goldminer;
+mod guardians_of_the_galaxy;
 
 pub use crate::primitive::Cowboy;
 pub use self::revolver::Revolver;

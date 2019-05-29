@@ -1,5 +1,6 @@
 // macros
 //@bytes_macro
+/// byte converts.
 #[macro_export]
 macro_rules! bytes {
     ($name: ident) => {
@@ -16,6 +17,7 @@ macro_rules! bytes {
 }
 
 //@deref_macro
+/// deref macro
 #[macro_export]
 macro_rules! deref {
     ($name: ident, $target: ident) => {
@@ -32,6 +34,7 @@ macro_rules! deref {
 }
 
 //@partition
+/// derefVec macro _duplicate_
 #[macro_export]
 macro_rules! partition {
     ($name: ident, $partition: ident) => {

@@ -2,6 +2,7 @@
 use super::Cowboy;
 use crate::primitive::{Barrel, ProofOfWork, Transaction, TransactionArray};
 
+/// Velvet Goldminer
 pub trait Miner<T> {
     fn mine<B>(&self, msg: B, txs: TransactionArray, miner: [u8; 32]) -> Barrel
     where B: std::convert::AsRef<[u8]>;

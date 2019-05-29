@@ -5,13 +5,7 @@ use ed25519_dalek::{Keypair};
 use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
 
-/// Users Flow Chart
-/// Load Cowboy
-/// -> Make Transaction
-/// -> Send Transaction to Transaction Pool
-/// -> Boarcast
-/// -> Transaction Pool Call Back?
-/// -> <Minner>
+/// Cowboy has public key and secret key.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Cowboy(Keypair);
 impl Cowboy {

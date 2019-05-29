@@ -2,8 +2,7 @@
 use super::Cowboy;
 use crate::primitive::{TxInput, TxOutput, Transaction};
 
-/// # Transfer
-/// wrap account directly, keep some attr space to construct better in future.
+/// Guardians of the galaxy
 pub trait Guardian<T> {
     fn load(&self, value: i32, to: [u8; 32], msg: &'static str) -> Transaction;
 }

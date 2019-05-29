@@ -71,8 +71,7 @@ impl Wheel {
     }
 }
 
-///IO Efficiency
-///TODO: files' size, just like, 00, 01...
+/// Cowboy + Revolver ~> Spaceboy
 pub struct Revolver {
     wheel: Wheel,
     pub pool:  TransactionArray,
@@ -80,6 +79,24 @@ pub struct Revolver {
 }
 
 impl Revolver {
+    /// locate database
+    ///
+    /// # Example
+    /// ```
+    /// fn revolver() {
+    ///     let revolver = Revolver::locate("test_pool", "test_chain", "test_cowboy");
+    ///     
+    ///     assert_eq!(revolver.pool.len(), 0);
+    ///     assert_eq!(revolver.pool.to_bytes().len(), 8);
+    ///     assert_eq!(revolver.pool, TransactionArray::default());
+    /// 
+    ///     assert_eq!(revolver.chain.len(), 1);
+    ///     assert_eq!(revolver.chain.to_bytes().len(), 239);
+    /// 
+    ///     assert_eq!(revolver.master().to_bytes().len(), 72);
+    ///     revolver.explode();
+    /// }
+    /// ```
     pub fn locate(p: &'static str, c: &'static str, cb: &'static str) -> Self {
         let wheel = Wheel::new(p, c, cb);
 
@@ -90,16 +107,19 @@ impl Revolver {
         }
     }
 
+    /// find the master cowboy
     pub fn master(&self) -> Cowboy {
         self.wheel.master()
     }
 
+    /// shoot transaction
     pub fn shoot(&mut self, tx: Transaction) {
         &self.pool.push(tx);
         &self.wheel.fill_pool(&self.pool);
         self.pool = self.wheel.scan_pool();
     }
 
+    /// refresh chain records.
     pub fn revolve(&mut self, bc: Barrel) {
         &self.chain.push(bc);
         &self.wheel.stretch_chain(&self.chain);
@@ -108,6 +128,7 @@ impl Revolver {
         self.wheel.pool.clean();
     }
 
+    /// clean database
     pub fn explode(&self) {
         if self.wheel.pool.path.exists() {
             self.wheel.pool.clean();

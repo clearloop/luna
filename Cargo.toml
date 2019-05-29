@@ -1,20 +1,25 @@
-[[bin]]
-path = "luna/main.rs"
-name = "luna"
-
 [package]
-name = "luna"
-version = "0.1.0"
+name = "spacejam"
+version = "0.1.2"
 authors = ["clearloop <udtrokia@gmail.com>"]
 edition = "2018"
 description = "Take your protein pills and put your helmet on."
-repository = "https://github.com/clearloop/luna"
+repository = "https://github.com/clearloop/spacejam"
 license = "GPL-3.0+"
+documentation = "https://docs.rs/spacejam"
+homepage = "https://github.com/clearloop/spacejam"
+keywords = ["micro-services"]
+readme = './README.md'
 
 [dependencies]
-core = { path = "./core" }
+dirs = "1.0.4"
+rand = "0.6.4"
+sha2 = "0.8.0"
+bincode = "1.0.1"
+num-bigint = "0.2.2"
+serde = "1.0.85"
+serde_derive = "1.0.85"
 
-[workspace]
-members = [
-        "./core"
-]
+[dependencies.ed25519-dalek]
+version = "1.0.0-pre.0"
+features = ["serde"]
