@@ -8,7 +8,7 @@ repository = "https://github.com/clearloop/spacejam"
 license = "GPL-3.0+"
 documentation = "https://docs.rs/spacejam"
 homepage = "https://github.com/clearloop/spacejam"
-keywords = ["micro-services"]
+keywords = ["micro-service"]
 readme = './README.md'
 
 [dependencies]
