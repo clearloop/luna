@@ -25,11 +25,11 @@ impl Capsule {
     }
 
     /// how to set thread orders???
-    pub fn handle(&self, func: &Fn(std::net::TcpStream)) {
-        for stream in self.listener.incoming() {
-            func(stream.unwrap());
-        }
-    }
+    // pub fn handle(&self, func: &Fn(std::net::TcpStream)) {
+    //     for stream in self.listener.incoming() {
+    //         func(stream.unwrap());
+    //     }
+    // }
     
     pub fn connect(&self, address: &'static str) {
         if let Ok(stream) = TcpStream::connect(address) {

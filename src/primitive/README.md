@@ -1,4 +1,18 @@
 # Primitive
+
+## refs
+
++ [Building a Multithreaded Web Server][1]
+
+
+
+[1]: https://doc.rust-lang.org/book/ch20-00-final-project-a-web-server.html
+
+
+
+---
+
+# Primitive
 > Basic Library
 
 ## barrel.rs

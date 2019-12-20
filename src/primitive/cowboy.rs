@@ -1,6 +1,6 @@
 use crate::{bytes, deref};
-use std::ops::{Deref, DerefMut};
 use rand::rngs::OsRng;
+use std::ops::{Deref, DerefMut};
 use ed25519_dalek::{Keypair};
 use bincode::{serialize, deserialize};
 use serde_derive::{Serialize, Deserialize};
@@ -10,7 +10,7 @@ use serde_derive::{Serialize, Deserialize};
 pub struct Cowboy(Keypair);
 impl Cowboy {
     pub fn born() -> Self {
-        let mut csprng: OsRng = OsRng::new().unwrap();
+        let mut csprng = OsRng{};
         let keypair: Keypair = Keypair::generate(&mut csprng);
         Cowboy(keypair)
     }

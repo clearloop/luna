@@ -11,7 +11,7 @@ SpaceJam is a micro-service framework, the implementation is lucid, first for `V
 ## Flow
 
 1. [Developer]: Write contracts in sonata.
-   1. Send contracts to SpaceJam
+   1. Send contracts to SpaceJam (with ed25519 account)
 2. [SpaceJam]: Receive contracts
    1. Check if contract exist
    2. Parse and write contracts into chain
@@ -63,12 +63,12 @@ Returns:
 )
 ```
 
-## Implemation
+## Architecture
 
-+ [ ] Multi-thread server.
-+ [ ] Code Parser
-+ [ ] Runtime
-  + [ ] Storage
+1. Multi-thread server.
+2. Runtime: Actor System
+   1. Code parser
+3. libp2p
 
 ## Contributing
 Take your protein pills and put your helmet on, launching yourself into space, you will find us in the tin can beyond the horizon under the velvetground.

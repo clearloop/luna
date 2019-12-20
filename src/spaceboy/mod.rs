@@ -4,12 +4,14 @@ use crate::thruster::{Guardian, Revolver, Cowboy, Miner, Telescope};
 /// Hallo Spaceboy
 pub struct Spaceboy {
     master: Cowboy,
-    revolver: Revolver
+    pub revolver: Revolver
 }
 
 impl Spaceboy {
     /// # Example
     /// ```
+    /// use spacejam::Spaceboy;
+    ///
     /// fn main() {
     ///     let mut spaceboy = Spaceboy::new(
     ///         "test_pool_spaceboy",

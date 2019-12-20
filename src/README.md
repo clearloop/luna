@@ -1,3 +1,18 @@
+# Architecture
+
+### Inner Layer
++ crypto
++ storage
+
+### Runtime Layer
++ virtual machine
++ actor
+
+### Magic-box(SpaceJam) Layer
++ servers
++ client
+
+
 # Luna - Core Library
 Romantic Code, Easy Coding.
 
@@ -13,3 +28,4 @@ Each mod in `luna/core` represents a `code layer`.
 + `thruster` and `spaceboy`
 
     `thruster` based on `primitive`, `space` based on `thruster`, directly.
+
