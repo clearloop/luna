@@ -2,7 +2,6 @@ mod utils;
 mod macros;
 pub mod io;
 pub mod tx;
-pub mod tcp;
 pub mod pow;
 pub mod barrel;
 pub mod cowboy;
