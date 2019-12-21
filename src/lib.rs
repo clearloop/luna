@@ -8,8 +8,7 @@ pub use spaceboy::Spaceboy;
 pub use thruster::*;
 
 // --- new code ---
-pub mod tcp;
-
+pub mod prototype;
 
 // Examples exports
 // pub use tcp;
