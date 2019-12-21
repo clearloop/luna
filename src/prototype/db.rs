@@ -1,7 +1,8 @@
 use std::sync::Mutex;
 use std::collections::HashMap;
 
-struct Database(Mutex<HashMap<String, String>>);
+#[derive(Default)]
+pub struct Database(pub Mutex<HashMap<String, String>>);
 
 #[cfg(test)]
 mod tests {

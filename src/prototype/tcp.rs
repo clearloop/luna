@@ -4,7 +4,7 @@ use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, Mutex, mpsc};
 
 /// consts
-const TCP_PACKAGE_SIZE: usize = 512;
+pub const TCP_PACKAGE_SIZE: usize = 512;
 
 /// SJ TcpServer
 pub struct TcpServer {
@@ -14,18 +14,19 @@ pub struct TcpServer {
 impl TcpServer {
     pub fn new(addr: &'static str) -> TcpServer {
         TcpServer {
-            listener: TcpListener::bind(addr).unwrap()
+            listener: TcpListener::bind(addr).unwrap(),
         }
     }
 
-    pub fn serve(self) -> std::io::Result<()> {
+    pub fn serve<F>(self, handler: F) -> std::io::Result<()>
+    where F: Fn(TcpStream) + Send + Sync + 'static + Copy {
         println!("TCP server start at {}", self.listener.local_addr().unwrap());
 
         let pool = ThreadPool::new(4);
         for stream in self.listener.incoming() {
             let stream = stream.unwrap();
-            pool.execute(|| {
-                handle_connection(stream);
+            pool.execute(move|| {
+                handler(stream);
             });
         }
 
@@ -45,21 +46,6 @@ impl TcpServer {
         Ok(())
     }
 }
-
-fn handle_connection(mut stream: TcpStream) {
-    let mut recv = [0; TCP_PACKAGE_SIZE];
-    stream.read(&mut recv).unwrap();
-    
-    let text = String::from_utf8(
-        recv.to_vec()
-    ).unwrap().trim_matches(char::from(0)).to_string();
-    
-    stream.write(format!("{:?}", text.to_owned()).as_bytes()).unwrap();
-    println!("[Server] received: {:?}", text);
-
-    stream.flush().unwrap();
-}
-
 
 /// Store Closures
 trait FnBox {
