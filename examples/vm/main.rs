@@ -1,7 +1,7 @@
 use spacejam::prototype::vm::Vm;
 
 fn main() {
-    let vm = Vm::new();
+    let vm = Vm::default();
     let code = r#"
      (define (foo a)
        (* a 4))

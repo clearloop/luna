@@ -1,6 +1,10 @@
 use std::net::TcpStream;
 use std::io::{Read, Write};
+use std::cell::RefCell;
 use super::tcp::TCP_PACKAGE_SIZE;
+use super::vm::Vm;
+
+thread_local!(static VM: RefCell<Vm> = RefCell::new(Vm::default()));
 
 #[derive(Debug, PartialEq)]
 pub enum Prefix {
@@ -16,9 +20,10 @@ pub enum Prefix {
 /// use spacejam::prototype::handler::{Request, Prefix};
 /// 
 /// fn main() {
-///     let req = "C(twoSum) (define (twoSum x y) (+ x y))";
-///     let res = Request::from(req);
-///     assert_eq!(res, Request{ prefix: Prefix::Contract, func: "twoSum", expr: "(define (twoSum x y) (+ x y))"});
+///   let c = Request::from("C(twoSum) (define (twoSum x y) (+ x y))");
+///   let q = Request::from("Q(twoSum) (8 32)");
+///   assert_eq!(c, Request{ prefix: Prefix::Contract, func: "twoSum", expr: "(define (twoSum x y) (+ x y))"});
+///   assert_eq!(q, Request{ prefix: Prefix::Query, func: "twoSum", expr: "(8 32)"});
 /// }
 /// ```
 #[derive(Debug, PartialEq)]
@@ -32,6 +37,14 @@ impl std::convert::From<&'static str> for Request {
     fn from(s: &'static str) -> Self {
         let ptr = s.find(")").unwrap_or(0);
         let es = s[ptr..s.len()].find("(").unwrap_or(0) + ptr;
+
+        if (ptr == 0) | (es == 0) {
+            return Request {
+                expr: "",
+                func: "",
+                prefix: Prefix::Error
+            };
+        }
         
         Request {
             prefix: match s.chars().nth(0).unwrap() {
@@ -45,20 +58,44 @@ impl std::convert::From<&'static str> for Request {
     }
 }
 
-pub fn handle_connection(mut stream: TcpStream) {
+/// Handler with vm
+pub fn handler(mut stream: TcpStream) {
     let mut recv = [0; TCP_PACKAGE_SIZE];
     stream.read(&mut recv).unwrap();
+
+    let text: &'static str = Box::leak(
+        std::str::from_utf8(&recv.to_vec())
+            .unwrap()
+            .trim_matches(char::from(0))
+            .to_string()
+            .into_boxed_str()
+    );
+
+    let req = Request::from(text);
+    match req.prefix {
+        Prefix::Contract => {
+            // if vm.input(req.func, req.expr).is_ok() {
+            VM.with(|f| {
+                f.borrow_mut().input(req.func, req.expr).unwrap();
+            });
+            stream.write(b"ok").unwrap();
+            //}
+        },
+        Prefix::Query => {
+            // let res = self.0.exec(req.func, req.expr);
+            // if res.is_ok() {
+            stream.write(b"ok").unwrap();
+            // }
+        },
+        Prefix::Error => {
+            stream.write(b"err").unwrap();
+        }
+    }
     
-    let text = String::from_utf8(
-        recv.to_vec()
-    ).unwrap().trim_matches(char::from(0)).to_string();
-
-    stream.write(format!("{:?}", text.to_owned()).as_bytes()).unwrap();
-    println!("[Server] received: {:?}", text);
-
-    stream.flush().unwrap();
+    // stream.write(format!("{:?}", text.to_owned()).as_bytes()).unwrap();
+    // println!("[Server] received: {:?}", text);
+    // stream.flush().unwrap();
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -66,8 +103,9 @@ mod tests {
     
     #[test]
     fn test_req_parser() {
-        let req = "C(twoSum) (define (twoSum x y) (+ x y))";
-        let res = Request::from(req);
-        assert_eq!(res, Request{ prefix: Prefix::Contract, func: "twoSum", expr: "(define (twoSum x y) (+ x y))"});
+        let c = Request::from("C(twoSum) (define (twoSum x y) (+ x y))");
+        let q = Request::from("Q(twoSum) (8 32)");
+        assert_eq!(c, Request{ prefix: Prefix::Contract, func: "twoSum", expr: "(define (twoSum x y) (+ x y))"});
+        assert_eq!(q, Request{ prefix: Prefix::Query, func: "twoSum", expr: "(8 32)"});
     }
 }

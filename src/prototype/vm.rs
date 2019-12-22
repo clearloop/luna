@@ -8,6 +8,7 @@ use super::db::Database;
 ///
 /// TODO:
 /// Convert code into syn, offer multi-language api.
+#[derive(Default)]
 pub struct Vm(pub Database);
 
 macro_rules! ketos_ref_ok {
@@ -17,10 +18,6 @@ macro_rules! ketos_ref_ok {
 }
 
 impl Vm {
-    pub fn new() -> Vm {
-        Vm(Database::default())
-    }
-    
     pub fn input(&self, name: &'static str, code: &'static str) -> Result<()> {
         let mut db = (self.0).0.lock().unwrap();
         db.insert(name.to_string(), code.to_string());
@@ -59,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_two_sum() {
-        let vm = Vm::new();
+        let vm = Vm::default();
         let code = r#"(define (twoSum x y) (+ x y))"#;
 
         &vm.input("twoSum", code);

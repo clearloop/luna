@@ -130,7 +130,6 @@ impl Worker {
         let thread = thread::spawn(move ||{
             loop {
                 let message = receiver.lock().unwrap().recv().unwrap();
-
                 match message {
                     Message::NewJob(job) => {
                         job.call_box();
