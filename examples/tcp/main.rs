@@ -15,7 +15,7 @@ fn main() {
 
     let t3 = thread::spawn(|| client2.send(
         "127.0.0.1:7878",
-        r#"Q(twoSum) (2 2)"#
+        r#"Q(twoSum) (8 8)"#
     ).unwrap());
     
     let r1 = t1.join().expect("thread one panicked");

@@ -21,7 +21,7 @@ impl TcpServer {
 
     pub fn serve<F>(self, handler: F) -> std::io::Result<()>
     where F: Fn(TcpStream, Arc<Vm>) + Send + Sync + 'static + Copy {
-        println!("TCP server start at {}", self.listener.local_addr().unwrap());
+        println!("SpaceJam launch at {}...", self.listener.local_addr().unwrap());
 
         let pool = ThreadPool::new(4);
         let vm = Arc::new(Vm::default());

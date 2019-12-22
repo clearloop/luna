@@ -23,6 +23,30 @@ SpaceJam is a micro-service framework, the implementation is lucid, first for `V
    2. Return Response
 5. [Client]: Get response
 
+
+## How SJ works?
+
+SJ is in [POC](/src/prototype) now, here is a demo to show how it works.
+
+Download SJ:
+
+```
+$ git clone https://github.com/clearloop/spacejam.git
+$ cd spacejam && cargo run
+SpaceJam launch at 127.0.0.1:7878...
+```
+
+Then we can open another window and use `netcat` to interact with SJ
+
+```
+$ (echo 'C(twoSum) (define (twoSum x y) (+ x y))' | nc 127.0.0.1 7878) && echo
+ok
+
+$ (echo 'Q(twoSum) (2 2)' | nc 127.0.0.1 7878) && echo
+4
+```
+
+
 ### Contracts
 
 How to write a contract? SpaceJam use [sonata](https://github.com/sonata) to parse data, btw, you can impl your own parser using spacejam api.
@@ -49,8 +73,7 @@ How to send a request to SpaceJam via http/https? `Post` https://example.com/spa
 ```lisp
 (map 
   (name twoSum)
-  (params 2 2)
-)
+  (params 2 2))
 ```
 
 Returns:
@@ -59,16 +82,16 @@ Returns:
 (map 
   (name twoSum)
   (params 2 2)
-  (data 4)
-)
+  (data 4))
 ```
 
 ## Architecture
 
-1. Multi-thread server.
-2. Runtime: Actor System
-   1. Code parser
-3. libp2p
+1. Server
+2. VM
+   1. parser
+   2. db
+3. p2p
 
 ## Contributing
 Take your protein pills and put your helmet on, launching yourself into space, you will find us in the tin can beyond the horizon under the velvetground.

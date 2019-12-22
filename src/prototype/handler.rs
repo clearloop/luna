@@ -81,19 +81,23 @@ pub fn handler(mut stream: TcpStream, vm: Arc<Vm>) {
     let req = Request::from(text);
     match req.prefix {
         Prefix::Contract => {
+            println!("Receive Contract...");
             if vm.input(req.func, req.expr).is_ok() {
                 stream.write(b"ok").unwrap();
             }
         },
         Prefix::Query => {
-            let expr: Vec<i32> = req.expr.split(' ').map(
-                |x| x.parse::<i32>().unwrap_or(0)
-            ).collect();
+            println!("Query Contract...");
+            let end = req.expr.find(")").unwrap_or(req.expr.len());
+            let expr: Vec<i32> = req.expr[1..end]
+                .split(' ')
+                .map(|x| x.parse::<i32>().unwrap_or(0))
+                .collect();
+            
             let params: Vec<Value> = expr.iter().map(|x| Value::from(*x)).collect();
-
             let res = vm.exec(req.func, params);
             if res.is_ok() {
-                stream.write(b"ok").unwrap();
+                stream.write(res.unwrap().as_bytes()).unwrap();
             }
         },
         Prefix::Error => {
@@ -101,9 +105,7 @@ pub fn handler(mut stream: TcpStream, vm: Arc<Vm>) {
         }
     }
     
-    // stream.write(format!("{:?}", text.to_owned()).as_bytes()).unwrap();
-    // println!("[Server] received: {:?}", text);
-    // stream.flush().unwrap();
+    stream.flush().unwrap();
 }
 
 #[cfg(test)]
