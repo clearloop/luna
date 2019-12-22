@@ -24,11 +24,11 @@ impl Vm {
         Ok(())
     }
 
-    pub fn exec(self, name: &'static str, params: Vec<Value>) -> Result<String> {
+    pub fn exec(&self, name: &'static str, params: Vec<Value>) -> Result<String> {
         let interp = Interpreter::new();
-        let db = (self.0).0.lock().unwrap();
+        let db = (&self.0).0.lock().unwrap();
         let code = db.get(name).unwrap();
-            
+
         interp.run_code(code, None).unwrap();
         let res = interp.call(name, params).unwrap();
         

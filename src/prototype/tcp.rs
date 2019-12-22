@@ -2,6 +2,7 @@ use std::thread;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, Mutex, mpsc};
+use super::vm::Vm;
 
 /// consts
 pub const TCP_PACKAGE_SIZE: usize = 512;
@@ -19,14 +20,16 @@ impl TcpServer {
     }
 
     pub fn serve<F>(self, handler: F) -> std::io::Result<()>
-    where F: Fn(TcpStream) + Send + Sync + 'static + Copy {
+    where F: Fn(TcpStream, Arc<Vm>) + Send + Sync + 'static + Copy {
         println!("TCP server start at {}", self.listener.local_addr().unwrap());
 
         let pool = ThreadPool::new(4);
+        let vm = Arc::new(Vm::default());
         for stream in self.listener.incoming() {
             let stream = stream.unwrap();
+            let vm = vm.clone();
             pool.execute(move|| {
-                handler(stream);
+                handler(stream, vm);
             });
         }
 

@@ -1,8 +1,10 @@
 use std::net::TcpStream;
 use std::io::{Read, Write};
 use std::cell::RefCell;
+use std::sync::Arc;
 use super::tcp::TCP_PACKAGE_SIZE;
 use super::vm::Vm;
+use ketos::Value;
 
 thread_local!(static VM: RefCell<Vm> = RefCell::new(Vm::default()));
 
@@ -58,8 +60,13 @@ impl std::convert::From<&'static str> for Request {
     }
 }
 
-/// Handler with vm
-pub fn handler(mut stream: TcpStream) {
+/// Handle tcp requests
+///
+/// Just can parse reqs with int params.
+///
+/// TODO:
+/// Add multi type parser.
+pub fn handler(mut stream: TcpStream, vm: Arc<Vm>) {
     let mut recv = [0; TCP_PACKAGE_SIZE];
     stream.read(&mut recv).unwrap();
 
@@ -74,18 +81,20 @@ pub fn handler(mut stream: TcpStream) {
     let req = Request::from(text);
     match req.prefix {
         Prefix::Contract => {
-            // if vm.input(req.func, req.expr).is_ok() {
-            VM.with(|f| {
-                f.borrow_mut().input(req.func, req.expr).unwrap();
-            });
-            stream.write(b"ok").unwrap();
-            //}
+            if vm.input(req.func, req.expr).is_ok() {
+                stream.write(b"ok").unwrap();
+            }
         },
         Prefix::Query => {
-            // let res = self.0.exec(req.func, req.expr);
-            // if res.is_ok() {
-            stream.write(b"ok").unwrap();
-            // }
+            let expr: Vec<i32> = req.expr.split(' ').map(
+                |x| x.parse::<i32>().unwrap_or(0)
+            ).collect();
+            let params: Vec<Value> = expr.iter().map(|x| Value::from(*x)).collect();
+
+            let res = vm.exec(req.func, params);
+            if res.is_ok() {
+                stream.write(b"ok").unwrap();
+            }
         },
         Prefix::Error => {
             stream.write(b"err").unwrap();
