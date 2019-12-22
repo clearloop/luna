@@ -1,6 +1,6 @@
 use std::thread;
-use spacejam::prototype::tcp::TcpServer;
-use spacejam::prototype::handler::handler;
+use spacejam::poc::tcp::TcpServer;
+use spacejam::poc::handler::handler;
     
 fn main() {
     let server = TcpServer::new("127.0.0.1:7878");

@@ -8,25 +8,9 @@ SpaceJam is a micro-service framework, the implementation is lucid, first for `V
 
 ![you][you]
 
-## Flow
-
-1. [Developer]: Write contracts in sonata.
-   1. Send contracts to SpaceJam (with ed25519 account)
-2. [SpaceJam]: Receive contracts
-   1. Check if contract exist
-   2. Parse and write contracts into chain
-   3. Serve contracts
-	  1. update / stop
-3. [Client]: Request contracts with params
-4. [SpaceJam]: Receive Request
-   1. Decode params from sonata
-   2. Return Response
-5. [Client]: Get response
-
-
 ## How SJ works?
 
-SJ is in [POC](/src/prototype) now, here is a demo to show how it works.
+SJ is under [POC](/src/poc) now, here is a demo to show how it works.
 
 Download SJ:
 
@@ -45,6 +29,21 @@ ok
 $ (echo 'Q(twoSum) (2 2)' | nc 127.0.0.1 7878) && echo
 4
 ```
+
+## Flow
+
+1. [Developer]: Write contracts in sonata.
+   1. Send contracts to SpaceJam (with ed25519 account)
+2. [SpaceJam]: Receive contracts
+   1. Check if contract exist
+   2. Parse and write contracts into chain
+   3. Serve contracts
+	  1. update / stop
+3. [Client]: Request contracts with params
+4. [SpaceJam]: Receive Request
+   1. Decode params from sonata
+   2. Return Response
+5. [Client]: Get response
 
 
 ### Contracts

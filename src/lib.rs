@@ -7,7 +7,7 @@
 // pub use thruster::*;
 
 // --- new code ---
-pub mod prototype;
+pub mod poc;
 
 // Examples exports
 // pub use tcp;

@@ -1,4 +1,4 @@
-use spacejam::prototype::vm::Vm;
+use spacejam::poc::vm::Vm;
 
 fn main() {
     let vm = Vm::default();
